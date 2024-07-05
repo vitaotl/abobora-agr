@@ -201,7 +201,7 @@ if ($offers) { ?>
             </div>
             <div class="offer-description">
               <p>
-                <a href="#" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" class="btn btn-sm btn-primary" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#033 " : "" ?>">
+                <a href="#" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" class="btn btn-sm" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#033 " : "" ?>">
                   <?= translateText('Detalhes da oferta', 'pt') ?>
                 </a>
               </p>
