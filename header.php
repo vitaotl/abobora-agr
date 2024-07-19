@@ -62,7 +62,6 @@ if($site_name == 'xn--cachaa-0ua')
 $url = 'https://www.agro.agr.br';
 
 $url_api = $url.'/api/site/'.str_replace('ç', 'c', $site_name) . "?" . http_build_query([ "ip" => $_SERVER["REMOTE_ADDR"], "ua" => $_SERVER['HTTP_USER_AGENT'] ]);
-
 //echo $url_api;
 
 $curl = curl_init();
@@ -182,6 +181,8 @@ $recaptcha_key = '6LegvqYZAAAAAEMFxWBnJpWeNQlHI6OelJLw6QZ7';
 					<li class="nav-item">
 						<a style="padding:15px;" class="nav-link" href="https://www.contratos.agr.br"> Contratos</a>
 					</li>
+					<li class="nav-item">
+						<a style="padding:15px;" class="nav-link" href="https://www.ofertas.agr.br"> Ofertas</a>
 					<li class="nav-item">
 						<a style="padding:15px;" class="nav-link" href="https://www.agro.agr.br/admin"> Login</a>
 					</li>
