@@ -4,6 +4,8 @@ include 'translater.php';
 $url_ofertas = $url . '/api/get-offers?' . http_build_query(['site' => $site_name]);
 
 $offers = json_decode(file_get_contents($url_ofertas));
+$sites = json_decode(file_get_contents('https://agro.agr.br/api/get-sites'));
+
 ?>
 <style>
 	.thumbnail-container {

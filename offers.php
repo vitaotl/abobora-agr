@@ -1,4 +1,53 @@
 <style>
+  .radio-container {
+    display: inline-block;
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    user-select: none;
+  }
+
+  .radio-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .radio-container input:checked~.checkmark {
+    background-color: #FF5722;
+  }
+
+  .radio-container input:checked~.checkmark:after {
+    display: block;
+  }
+
+  .radio-container .checkmark:after {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .offers-container {
     width: 100%;
     margin: 0 auto;
@@ -176,10 +225,66 @@ if ($offers) { ?>
           </small>
         </h5>
       </div>
+      <div class="d-flex mt-4" style="gap: 20px">
+        <label class="radio-container">
+          Todas
+          <input type="radio" name="filter" value="all" checked="">
+          <span class="checkmark"></span>
+        </label>
+        <label class="radio-container">
+          Venda
+          <input type="radio" name="filter" value="Venda">
+          <span class="checkmark"></span>
+        </label>
+        <label class="radio-container">
+          Compra
+          <input type="radio" name="filter" value="Compra">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="d-flex mb-2" style="gap: 20px">
+        <div>
+          <label class="mb-0">Produto</label>
+          <select name="site" id="siteSelect" class="form-control form-control-sm">
+            <option value="">Selecione...</option>
+            <?php
+            foreach ($sites as $sites) {
+            ?>
+              <option data-url="<?= $sites->url_site ?>" data-site="<?= $sites->url ?>" <?= ($site->url == $sites->url) ? 'selected' : null ?> value="<?= $sites->url  ?>"><?= $sites->title  ?></option>
+            <?php
+            } ?>
+          </select>
+        </div>
+        <div class="">
+          <label class="mb-0">Tipo</label>
+          <select id="tipoSelect" class="form-control form-control-sm">
+            <option value="all">Todos os Tipos</option>
+            <?php
+            foreach ($offers as $offer) {
+            ?>
+              <option value="<?= $offer->tipo ?>"><?= $offer->tipo ?></option>
+            <?php
+            } ?>
+          </select>
+        </div>
+        <div class="">
+          <label class="mb-0">Localidade</label>
+          <select id="localidadeSelect" class="form-control form-control-sm">
+            <option value="all">Todas as Localidades</option>
+            <?php
+            foreach ($offers as $offer) {
+            ?>
+              <option value="<?= $offer->cidade ?>/<?= $offer->estado ?>"><?= $offer->cidade ?>/<?= $offer->estado ?></option>
+            <?php
+            } ?>
+          </select>
+        </div>
+      </div>
+
       <?php if (count($offers) > 3) : ?>
         <div class="w-100 d-flex justify-content-between d-none flex-column flex-md-row flex-wrap">
           <?php foreach ($offers as $offer) : ?>
-            <div class="card card-ofertas-destaque mb-4">
+            <div class="card-ofertas card card-ofertas-destaque mb-4" data-type="<?= $offer->tipo_oferta[0] ?>" data-tipo="<?= $offer->tipo ?>" data-localidade="<?= $offer->cidade ?>/<?= $offer->estado ?>">
               <div class="d-flex align-items-center flex-column" style="gap: 10px">
                 <div class="w-100 d-flex justify-content-center">
                   <div title="<?= $offer->tipo ?>" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" href="#" class="offer-image" style="cursor:pointer; background-image: url('<?= $url . '/upload/fotos/' . $offer->fotos[0] . '_thumb.png' ?>')"></div>
@@ -201,7 +306,7 @@ if ($offers) { ?>
         </div>
       <?php else : ?>
         <?php foreach ($offers as $offer) : ?>
-          <div class="offer">
+          <div class="offer card-ofertas" data-type="<?= $offer->tipo_oferta[0] ?>" data-tipo="<?= $offer->tipo ?>" data-localidade="<?= $offer->cidade ?>/<?= $offer->estado ?>">
             <div class="offer-header" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#3addb487 " : "" ?>">
               <span class="badge <?= $offer->tipo_oferta[1] ?>" style="<?= $offer->tipo_oferta[0] == "Compra" ? "background:#033 " : "" ?>">
                 <?= translateText($offer->tipo_oferta[0], 'pt') ?>
@@ -270,3 +375,53 @@ if ($offers) { ?>
     <?php include 'modal-oferta.php'; ?>
   <?php endforeach; ?>
 <?php } ?>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const radioButtons = document.querySelectorAll('input[name="filter"]');
+    const tipoSelect = document.getElementById('tipoSelect');
+    const localidadeSelect = document.getElementById('localidadeSelect');
+    const cards = document.querySelectorAll('.card-ofertas-destaque');
+    const siteSelect = document.getElementById('siteSelect');
+    const siteUrl = "<?= $site->url ?>";
+
+    function filterCards() {
+      const filterValue = document.querySelector('input[name="filter"]:checked').value;
+      const tipoValue = tipoSelect.value;
+      const localidadeValue = localidadeSelect.value;
+
+      cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        const cardTipo = card.getAttribute('data-tipo');
+        const cardLocalidade = card.getAttribute('data-localidade');
+
+        const matchesFilter = filterValue === 'all' || cardType === filterValue;
+        const matchesTipo = tipoValue === 'all' || cardTipo === tipoValue;
+        const matchesLocalidade = localidadeValue === 'all' || cardLocalidade === localidadeValue;
+
+        if (matchesFilter && matchesTipo && matchesLocalidade) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', filterCards);
+    });
+
+    tipoSelect.addEventListener('change', filterCards);
+    localidadeSelect.addEventListener('change', filterCards);
+
+    siteSelect.addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      const url = selectedOption.getAttribute('data-url');
+      const dataSite = selectedOption.getAttribute('data-site');
+
+      if (url && dataSite !== siteUrl) {
+        window.open(url, '_blank');
+      }
+    });
+  });
+</script>
