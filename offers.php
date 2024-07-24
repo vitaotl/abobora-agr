@@ -242,7 +242,7 @@ if ($offers) { ?>
           <span class="checkmark"></span>
         </label>
       </div>
-      <div class="d-flex mb-2" style="gap: 20px">
+      <div class="d-flex flex-column flex-md-row mb-2" style="gap: 20px">
         <div>
           <label class="mb-0">Produto</label>
           <select name="site" id="siteSelect" class="form-control form-control-sm">
