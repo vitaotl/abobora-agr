@@ -279,6 +279,9 @@ if ($offers) { ?>
             } ?>
           </select>
         </div>
+        <div class="d-flex align-items-end">
+          <button id="clearButton" class="text-white btn btn-secondary btn-sm">Limpar</button>
+        </div>
       </div>
 
       <?php if (count($offers) > 3) : ?>
@@ -381,7 +384,7 @@ if ($offers) { ?>
     const radioButtons = document.querySelectorAll('input[name="filter"]');
     const tipoSelect = document.getElementById('tipoSelect');
     const localidadeSelect = document.getElementById('localidadeSelect');
-    const cards = document.querySelectorAll('.card-ofertas-destaque');
+    const cards = document.querySelectorAll('.card-ofertas');
     const siteSelect = document.getElementById('siteSelect');
     const siteUrl = "<?= $site->url ?>";
 
@@ -407,6 +410,12 @@ if ($offers) { ?>
       });
     }
 
+    function clearCards() {
+      cards.forEach(card => {
+        card.style.display = 'block';
+      });
+    }
+
     radioButtons.forEach(radio => {
       radio.addEventListener('change', filterCards);
     });
@@ -422,6 +431,13 @@ if ($offers) { ?>
       if (url && dataSite !== siteUrl) {
         window.open(url, '_blank');
       }
+    });
+
+    document.getElementById('clearButton').addEventListener('click', function() {
+      document.getElementById('siteSelect').value = 'driedfruits';
+      document.getElementById('tipoSelect').value = 'all';
+      document.getElementById('localidadeSelect').value = 'all';
+      clearCards()
     });
   });
 </script>
