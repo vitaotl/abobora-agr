@@ -109,12 +109,10 @@
   }
 
   .offer-image {
-    height: 170px;
+    height: 135px;
     width: 100%;
-    max-width: 290px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    object-fit: contain;
+    cursor: pointer;
   }
 
   .thumbnail {
@@ -144,6 +142,25 @@
 
     border: 1px solid #eee;
     border-radius: 5px;
+  }
+
+  .mini-image {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 5px;
+    cursor: pointer;
+    object-fit: cover;
+
+    opacity: 0.5;
+  }
+
+  .mini-image:hover {
+    opacity: 1;
+  }
+
+  .mini-image-active {
+    opacity: 1 !important;
   }
 
   @media screen and (max-width: 1024px) {
@@ -289,8 +306,13 @@ if ($offers) { ?>
           <?php foreach ($offers as $offer) : ?>
             <div class="card-ofertas card card-ofertas-destaque mb-4" data-type="<?= $offer->tipo_oferta[0] ?>" data-tipo="<?= $offer->tipo ?>" data-localidade="<?= $offer->cidade ?>/<?= $offer->estado ?>">
               <div class="d-flex align-items-center flex-column" style="gap: 10px">
-                <div class="w-100 d-flex justify-content-center">
-                  <div title="<?= $offer->tipo ?>" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" href="#" class="offer-image" style="cursor:pointer; background-image: url('<?= $url . '/upload/fotos/' . $offer->fotos[0] . '_thumb.png' ?>')"></div>
+                <div class="w-100 d-flex justify-content-center position-relative mb-3">
+                  <img title="<?= $offer->tipo ?>" data-toggle="modal" data-target="#modal-offer-<?= $offer->id ?>" href="#" class="offer-image" src="<?= $url . '/upload/fotos/' . $offer->fotos[0] . '_thumb.png' ?>" />
+                  <div class="position-absolute" style="bottom: 0; transform: translate(0px, 55%);">
+                    <?php foreach ($offer->fotos as $index => $foto) : ?>
+                      <img src="<?= $url . '/upload/fotos/' . $foto . '_thumb.png' ?>" alt="Mini imagem" class="mini-image <?= $index == 0 ? 'mini-image-active' : '' ?>" >
+                    <?php endforeach; ?>
+                  </div>
                 </div>
                 <hr class="w-100 my-1">
                 <div class="w-100">
@@ -438,6 +460,26 @@ if ($offers) { ?>
       document.getElementById('tipoSelect').value = 'all';
       document.getElementById('localidadeSelect').value = 'all';
       clearCards()
+    });
+
+    var offerImages = document.querySelectorAll('.offer-image');
+    offerImages.forEach(function(offerImage) {
+      var thumbnailsContainer = offerImage.nextElementSibling;
+      var thumbnails = thumbnailsContainer.querySelectorAll('.mini-image');
+      
+      thumbnails.forEach(function(thumbnail) {
+        thumbnail.addEventListener('click', function() {
+
+          thumbnails.forEach(function(thumbnail) {
+            thumbnail.classList.remove('mini-image-active');
+          });
+         
+          thumbnail.classList.add('mini-image-active');
+         
+          var imageUrl = thumbnail.src;
+          offerImage.src = imageUrl;
+        });
+      });
     });
   });
 </script>
