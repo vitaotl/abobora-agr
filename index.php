@@ -397,7 +397,7 @@ $sites = json_decode(file_get_contents('https://agro.agr.br/api/get-sites'));
 							foreach ($site->correlatos as $correlato) {
 							?>
 								<div class="col-6">
-									<a href="<?= $correlato['url'] ?>" class="btn btn-secondary btn-block btn-sm mb-2"><?= $correlato['title'] ?></a>
+									<a href="<?= $correlato['url_site'] ?>" class="btn btn-secondary btn-block btn-sm mb-2"><?= $correlato['title'] ?></a>
 								</div>
 							<?php
 							} ?>
